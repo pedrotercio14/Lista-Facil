@@ -127,11 +127,13 @@ export function useShoppingList(userId, listType = 'casa') {
   }, [activeHostId, listType]);
 
   const loadCache = useCallback(() => {
-    if (!activeHostId) return;
+    if (!activeHostId) return false;
     const cached = localStorage.getItem(`listaFacil_cache_${listType}_${activeHostId}`);
     if (cached) {
       setItems(JSON.parse(cached));
+      return true;
     }
+    return false;
   }, [activeHostId, listType]);
 
   // Checar Compartilhamento Familiar
@@ -174,14 +176,14 @@ export function useShoppingList(userId, listType = 'casa') {
     if (!activeHostId) return;
     
     // Carrega do cache imediatamente para leitura offline instantânea
-    loadCache();
+    const hasCache = loadCache();
     
     if (!navigator.onLine) {
       setLoading(false);
       return;
     }
 
-    setLoading(true);
+    if (!hasCache) setLoading(true);
     try {
       const { data, error } = await supabase
         .from('shopping_items')
