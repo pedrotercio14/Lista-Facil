@@ -1,8 +1,9 @@
-import { HiOutlineSparkles, HiOutlineMoon, HiOutlineSun, HiOutlineShoppingBag, HiOutlineLogout, HiOutlineUserGroup } from 'react-icons/hi';
+import { HiOutlineSparkles, HiOutlineMoon, HiOutlineSun, HiOutlineShoppingBag, HiOutlineLogout, HiOutlineUserGroup, HiOutlineStatusOffline } from 'react-icons/hi';
 import { cn } from '../lib/utils';
 import { ProgressRing } from './ProgressRing';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export function Header({ itemsCount, pendingCount, isDarkMode, toggleDarkMode, onLogout, onOpenFamily }) {
+export function Header({ itemsCount, pendingCount, isDarkMode, toggleDarkMode, onLogout, onOpenFamily, isOffline }) {
   const isAllDone = itemsCount > 0 && pendingCount === 0;
   
   const hour = new Date().getHours();
@@ -20,18 +21,18 @@ export function Header({ itemsCount, pendingCount, isDarkMode, toggleDarkMode, o
             <HiOutlineShoppingBag className="w-4 h-4 text-white relative z-10" />
           </div>
           
-          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white flex items-center gap-2 transition-colors">
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white flex items-center gap-2 transition-colors">
             Lista<span className="text-emerald-600 dark:text-emerald-400 font-light">Fácil</span>
             {isAllDone && (
-              <HiOutlineSparkles className="w-5 h-5 text-emerald-500 animate-pulse" />
+              <HiOutlineSparkles className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500 animate-pulse" />
             )}
           </h1>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {itemsCount > 0 && (
-            <div className="flex items-center gap-2 mr-2">
-              <div className="flex flex-col items-end">
+            <div className="flex items-center gap-1.5 sm:gap-2 mr-1 sm:mr-2">
+              <div className="hidden sm:flex flex-col items-end">
                 <span className="text-sm font-bold text-gray-800 dark:text-slate-200 leading-none whitespace-nowrap">
                   {isAllDone ? 'Tudo Pronto!' : `${itemsCount - pendingCount} de ${itemsCount}`}
                 </span>
@@ -39,7 +40,7 @@ export function Header({ itemsCount, pendingCount, isDarkMode, toggleDarkMode, o
                   {isAllDone ? 'Compras Feitas' : 'Itens'}
                 </span>
               </div>
-              <ProgressRing radius={18} stroke={3.5} progress={progress} isDone={isAllDone} />
+              <ProgressRing radius={16} stroke={3} progress={progress} isDone={isAllDone} />
             </div>
           )}
 
@@ -70,10 +71,24 @@ export function Header({ itemsCount, pendingCount, isDarkMode, toggleDarkMode, o
         </div>
       </div>
 
-      <div className="flex items-center gap-2 ml-1">
+      <div className="flex items-center justify-between w-full ml-1">
         <p className="text-xs font-medium text-gray-400 dark:text-slate-500 transition-colors truncate">
           {greeting}! • {dateStr}
         </p>
+        
+        <AnimatePresence>
+          {isOffline && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded-full border border-amber-200 dark:border-amber-500/20 shadow-sm mr-2"
+            >
+              <HiOutlineStatusOffline className="w-3.5 h-3.5" />
+              <span>Offline</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );
