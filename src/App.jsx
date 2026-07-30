@@ -20,7 +20,7 @@ function MainApp({ session }) {
   const { 
     items, loading, addItem, toggleItem, removeItem, editItemName, clearAll, 
     categories, reorderCategories, itemHistory,
-    isGuest, joinFamily, leaveFamily, activeHostId
+    isGuest, joinFamily, leaveFamily, activeHostId, isOffline
   } = useShoppingList(session.user.id, listType);
   
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -47,6 +47,7 @@ function MainApp({ session }) {
         toggleDarkMode={toggleDarkMode}
         onOpenFamily={() => setIsFamilyModalOpen(true)}
         onLogout={() => supabase.auth.signOut()}
+        isOffline={isOffline}
       />
 
       <main className="flex-1 overflow-y-auto px-4 sm:px-6 relative z-10 scroll-smooth pb-32 pt-4">
